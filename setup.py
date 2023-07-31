@@ -7,5 +7,5 @@ setup(
     author='ELF',
     license='MIT',
     install_requires=[],
-    setup_requires=['pywin32'],
+    setup_requires=['pywin32' ,'_winreg'],
 )
